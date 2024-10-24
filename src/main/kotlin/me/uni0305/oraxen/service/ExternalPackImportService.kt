@@ -2,10 +2,13 @@ package me.uni0305.oraxen.service
 
 import io.th0rgal.oraxen.api.OraxenPack
 import me.uni0305.oraxen.config.ExternalPackImportConfig
+import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.LoggerFactory
 
-class ExternalPackImportService(private val config: ExternalPackImportConfig) {
+class ExternalPackImportService(private val plugin: JavaPlugin) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
+    private val config: ExternalPackImportConfig
+        get() = ExternalPackImportConfig(plugin.config)
 
     fun getPacks() = if (config.isEnabled()) config.getPacks() else emptyList()
 

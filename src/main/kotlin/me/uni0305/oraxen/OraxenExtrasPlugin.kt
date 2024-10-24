@@ -1,6 +1,5 @@
 package me.uni0305.oraxen
 
-import me.uni0305.oraxen.config.ExternalPackImportConfig
 import me.uni0305.oraxen.service.ExternalPackImportService
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -13,8 +12,7 @@ class OraxenExtrasPlugin : JavaPlugin() {
         saveDefaultConfig()
         reloadConfig()
 
-        val externalPackImportConfig = ExternalPackImportConfig(config)
-        externalPackImportService = ExternalPackImportService(externalPackImportConfig)
+        externalPackImportService = ExternalPackImportService(this)
         OraxenExtrasCommand(this)
     }
 
