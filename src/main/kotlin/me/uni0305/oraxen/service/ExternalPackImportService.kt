@@ -1,9 +1,10 @@
 package me.uni0305.oraxen.service
 
-import io.th0rgal.oraxen.api.OraxenPack
+import io.th0rgal.oraxen.OraxenPlugin
 import me.uni0305.oraxen.config.ExternalPackImportConfig
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CompletableFuture
 
 class ExternalPackImportService(private val plugin: JavaPlugin) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -12,21 +13,30 @@ class ExternalPackImportService(private val plugin: JavaPlugin) {
 
     fun getPacks() = if (config.isEnabled()) config.getPacks() else emptyList()
 
-    fun importPacks() {
+    fun importPacks(): CompletableFuture<Void> = CompletableFuture.runAsync {
         if (!config.isEnabled()) {
             logger.warn("External pack import is disabled")
-            return
+            return@runAsync
         }
 
-        val packs = config.getPacks()
-        if (packs.isEmpty()) {
+        val directories = config.getPacks()
+        if (directories.isEmpty()) {
             logger.warn("No external packs to import")
-            return
+            return@runAsync
         }
 
         try {
-            OraxenPack.addFilesToPack(packs.toTypedArray())
-            logger.info("Imported ${packs.size} external packs")
+            val packFolder = OraxenPlugin.get().resourcePack.packFolder
+            for (directory in directories) {
+                val files = directory.walkTopDown().filter { it.isFile && it.exists() }
+                for (file in files) {
+                    val relativePath = directory.toPath().relativize(file.toPath()).toString()
+                    val targetFile = packFolder.resolve(relativePath)
+                    if (targetFile.exists() && targetFile.readBytes().contentEquals(file.readBytes())) continue
+                    file.copyTo(targetFile, true)
+                }
+            }
+            logger.info("Successfully imported external packs")
         } catch (e: Exception) {
             logger.error("Failed to import external packs", e)
         }
