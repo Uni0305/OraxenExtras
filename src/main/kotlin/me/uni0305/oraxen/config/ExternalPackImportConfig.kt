@@ -12,6 +12,6 @@ class ExternalPackImportConfig(private val config: FileConfiguration) {
     fun isEnabled() = config.getBoolean("$SECTION_PATH.enabled", false)
 
     fun getPacks(): List<File> = config.getStringList("$SECTION_PATH.packs")
-        .map { File(Bukkit.getServer().pluginsFolder, it).resolve("assets") }
-        .filter { it.exists() }
+        .map { File(Bukkit.getServer().pluginsFolder, it) }
+        .filter { it.isDirectory && it.exists() }
 }

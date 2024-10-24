@@ -33,9 +33,11 @@ class OraxenExtrasCommand(private val plugin: JavaPlugin) : BukkitCommand("oraxe
 
                 when (args[1].lowercase()) {
                     "reload" -> {
-                        OraxenExtrasPlugin.externalPackImportService.importPacks()
-                        OraxenPack.reloadPack()
-                        sender.sendRichMessage("<gold>Reloaded Oraxen pack.")
+                        sender.sendRichMessage("<gold>Reloading Oraxen pack...")
+                        OraxenExtrasPlugin.externalPackImportService.importPacks().thenAcceptAsync {
+                            OraxenPack.reloadPack()
+                            sender.sendRichMessage("<gold>Reloaded Oraxen pack.")
+                        }
                         return true
                     }
                     "upload" -> {
