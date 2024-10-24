@@ -1,0 +1,4 @@
+import-external-packs:
+  enabled: false
+  packs:
+    - ModelEngine/resource pack

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.uni0305"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -22,7 +22,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 bukkitPluginYaml {
